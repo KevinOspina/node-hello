@@ -2,25 +2,24 @@ pipeline {
     agent any
 
     stages {
-         stage('CHeckout') {
+         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/master'], [name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: '3c64eac4-ac7a-47d5-849c-f7c5221c6484', url: 'https://github.com/KevinOspina/node-hello']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], browser: [$class: 'GithubWeb', repoUrl: 'https://github.com/KevinOspina/node-hello.git'], extensions: [], userRemoteConfigs: [[credentialsId: '261d6b1d-4e0d-45f1-96b2-eae3ea36e052', url: 'https://github.com/KevinOspina/node-hello.git']]])
             }
         }
         
         stage('Build') {
             steps {
-                echo 'Building..'
+                sh 'node --version'
+                sh 'npm --version'
             }
         }
-        stage('Test') {
-            steps {
-                echo 'Testing..'
-            }
-        }
+        
         stage('Deploy') {
             steps {
-                echo 'Deploying....'
+                echo 'Deploying..'
+                //sh 'npm start'
+                
             }
         }
     }
