@@ -10,6 +10,6 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(port, () => {
-  server.timeout = 2000;
+  server.timeout = 500;
   console.log(`Server running on http://localhost:${port}/`);
 });
