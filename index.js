@@ -6,10 +6,9 @@ const server = http.createServer((req, res) => {
   res.statusCode = 200;
   const msg = 'Hello Node!\n'
   res.end(msg);
-  
+  server.timeout = 20;
 });
-
 server.listen(port, () => {
-  server.timeout = 500;
+  server.timeout = 20;
   console.log(`Server running on http://localhost:${port}/`);
 });
