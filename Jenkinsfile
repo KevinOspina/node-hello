@@ -12,13 +12,16 @@ pipeline {
             steps {
                 sh 'node --version'
                 sh 'npm --version'
+                sh 'docker login -u kevinospina03 -p nacional3'
+                sh 'docker build .'
+                sj 'docker push kevinospina03/node_hello'
             }
         }
         
         stage('Deploy') {
             steps {
                 echo 'Deploying..'
-                //sh 'npm start'
+                sh 'docker run kevinospina03/node_hello'
                 
             }
             
