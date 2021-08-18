@@ -8,23 +8,55 @@ pipeline {
             }
         }
         
-        stage('Build') {
-            steps {
+        stage('Build'){
+            steps{
+                 
+                    
                 sh 'node --version'
                 sh 'npm --version'
-                sh 'docker login -u kevinospina03 -p nacional3'
-                sh 'docker build .'
-                sj 'docker push kevinospina03/node_hello'
+                
+                //sh 'docker login -u kevinospina03 -p ${PASS}'
+                //sh 'cat ~/pass.txt | docker login --username kevinospina03 --password-stdin'
+                //sh 'docker build .'
+                //sh 'docker push kevinospina03/node_hello'
+                
+                 script {
+                    /**
+                     * login to docker for private repository
+                     * create credentials in jenkins page.
+                     **/
+                     withCredentials([usernamePassword(credentialsId: '37267417-47b3-42ac-9844-3f307ddb9306', passwordVariable: 'password', usernameVariable: 'username')]){
+                         sh '''
+                            echo "${PASS} | docker login -u ${USER} --password-stdin"
+                         '''
+                         def app = docker.build("kevinospina03/node_hello")
+                        //app.push()
+                     }
+                }
             }
         }
         
         stage('Deploy') {
             steps {
-                echo 'Deploying..'
-                sh 'docker run kevinospina03/node_hello'
-                
+               
+                 withCredentials([usernamePassword(credentialsId: '37267417-47b3-42ac-9844-3f307ddb9306', passwordVariable: 'password', usernameVariable: 'username')]){
+                    /**
+                    * Restart docker server
+                    **/
+                    sh '''
+                        echo "${PASS} | docker login -u ${USER} --password-stdin"
+                        docker stop node_hello
+                        docker rm node_hello
+                        docker pull kevinospina03/node_hello:latest
+                        docker run -d -p 3000:3000 --name node_hello -t kevinospina03/node_hello:latest
+                    '''
+                }
             }
-            
+        
         }
     }
+    
+    
 }
+
+
