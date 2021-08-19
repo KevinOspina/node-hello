@@ -29,7 +29,7 @@ pipeline {
                          sh '''
                             echo "${PASS} | docker login -u ${USER} --password-stdin"
                          '''
-                         def app = docker.build("kevinospina03/node_hello")
+                         def app = docker.build("kevinospina03/node_hello").push()
                         //app.push()
                      }
                 }
