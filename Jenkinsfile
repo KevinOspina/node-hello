@@ -1,6 +1,8 @@
 pipeline {
-    agent any
-
+    agent 
+    enviroment{
+    DOCKERHUB_CREDENTIALS= credentials('kevinospina-dockerhub')
+    }
     stages {
          stage('Checkout') {
             steps {
@@ -10,31 +12,24 @@ pipeline {
         
         stage('Build'){
             steps{
-                 
-                    
-                sh 'node --version'
-                sh 'npm --version'
-                
-                //sh 'docker login -u kevinospina03 -p ${PASS}'
-                //sh 'cat ~/pass.txt | docker login --username kevinospina03 --password-stdin'
-                //sh 'docker build .'
-                //sh 'docker push kevinospina03/node_hello'
-                
-                 script {
-                    /**
-                     * login to docker for private repository
-                     * create credentials in jenkins page.
-                     **/
-                     withCredentials([usernamePassword(credentialsId: '37267417-47b3-42ac-9844-3f307ddb9306', passwordVariable: 'password', usernameVariable: 'username')]){
-                         sh '''
-                            echo "${PASS} | docker login -u ${USER} --password-stdin"
-                         '''
-                         def app = docker.build("kevinospina03/node_hello").push()
-                        //app.push()
-                     }
-                }
+                 sh 'docker build -t kevinospina03/node_hello:latest'
             }
         }
+        
+        stage('Login'){
+            steps{
+                 sh '''
+                     echo "${PASS} | docker login -u ${USER} --password-stdin"
+                 '''
+            }
+        }
+        
+        stage('Push'){
+            steps{
+                 sh 'docker push kevinospina03/node_hello:latest'
+            }
+        }
+        
         
         stage('Deploy') {
             steps {
@@ -55,6 +50,11 @@ pipeline {
         
         }
     }
+    post {
+        always {
+            sh 'docker logout'
+    }
+    
     
     
 }
