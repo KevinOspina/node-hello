@@ -12,7 +12,7 @@ pipeline {
         
         stage('Build'){
             steps{
-                 sh 'docker build -t kevinospina03/node_hello:latest'
+                 sh 'docker build -t kevinospina03/node_hello:latest .'
             }
         }
         
